@@ -1,0 +1,8 @@
+*.egg-info
+build
+debian/files
+debian/simpleevent/*
+debian/python-simpleevent.debhelper.log
+debian/python-simpleevent.postinst.debhelper
+debian/python-simpleevent.prerm.debhelper
+debian/python-simpleevent.substvars

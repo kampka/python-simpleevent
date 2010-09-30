@@ -1,0 +1,14 @@
+Source: python-simpleevent
+Section: python
+Priority: extra
+Maintainer: Christian Kampka <chris@emerge-life.de>
+Build-Depends: debhelper (>= 7), python (>= 2.4), python-setuptools
+Standards-Version: 3.9.1
+Homepage: https://github.com/kampka/python-simpleevent
+
+Package: python-simpleevent
+Architecture: all
+Depends: ${misc:Depends}, python (>= 2.4)
+Description: A simple python event notification system
+ python-simpleevent lets you register multiple event handlers 
+ to an event that will be invoked if an event occurs.
