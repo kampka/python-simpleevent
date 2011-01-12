@@ -24,9 +24,9 @@ setup(
 	license='GPL-2',
 	url='https://github.com/kampka/python-simpleevent',
 	description='A simple python event notification system',
-    long_description="  A simple python event notification system \
-                        python-simpleevent lets you register multiple event handlers \
-                        to an event that will be invoked if an event occurs.",
+	long_description="A simple python event notification system \
+		python-simpleevent lets you register multiple event handlers \
+		to an event that will be invoked if an event occurs.",
 	packages=find_packages(exclude=["tests", ".git"]),
-    test_suite="tests.testsuite"
+	test_suite="tests.testsuite"
 )
