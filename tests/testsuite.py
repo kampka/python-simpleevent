@@ -28,7 +28,7 @@ class SimpleEventTestCase(unittest.TestCase):
 			self.message = "Event mock was not altered by any event handler."
 
 	def setUp(self):
-		self.em = EventManager()
+		self.em = EventManager(50)
 
 	def test_emit(self):
 
@@ -85,6 +85,15 @@ class SimpleEventTestCase(unittest.TestCase):
 		self.assertTrue(result.failure(), "Expected result to be marked as a failure, but it isn't")
 		self.assertFalse(result.success(), "Did not expect result to be marked as a success, but it is")
 		self.assertNotEqual(result.traceback, None, "Expected result to capture a traceback, but it does not have one")
+
+	def test_priotityRanges(self):
+		self.assertRaises(AssertionError, EventManager, -1)
+		self.assertRaises(AssertionError, self.em.registerHandler, "notify", lambda x: None, 60)
+		try:
+			self.em.registerHandler("notify", lambda x: None, 50)
+		except AssertionError, e:
+			self.fail("Handler is in acceptable parameters but it is being rejected.")
+
 
 	def tearDown(self):
 		self.em = None

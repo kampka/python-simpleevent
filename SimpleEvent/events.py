@@ -45,7 +45,17 @@ class EventManager(object):
 	Usually, only a single instance of this class exists throughout a program.
 	"""
 	
-	def __init__(self):
+	def __init__(self, maxPriority=100):
+		"""
+		Create a new EventManager
+
+		:param maxPriority: The maximum priotiry range an event can be registered in.
+		:type maxPriority: int.
+		"""
+		
+		assert maxPriority > 0
+
+		self._maxPriority = maxPriority
 		self._handlers = {}
 		
 	def registerHandler(self, event, handler, priority=50):
@@ -66,7 +76,7 @@ class EventManager(object):
 		:returns: :class:`EventResult` - An object representing the result of the event dispatch.
 		"""
 		assert priority >= 0
-		assert priority <= 100
+		assert priority <= self._maxPriority
 		
 		if not self._handlers.has_key(event):
 			self._handlers[event] = {}
