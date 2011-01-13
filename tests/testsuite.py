@@ -39,7 +39,10 @@ class SimpleEventTestCase(unittest.TestCase):
 
 		self.em.registerHandler("notify", handler)
 
-		self.em.emit(Event(notification))
+		result = self.em.emit(Event(notification))
+		
+		self.assertTrue(result.success(), "Event chain reported an error during execution that cannot have occurred.")
+		self.assertFalse(result.failure(), "Event chain reported a failure that did not happen.")
 
 	def test_emitUntil(self):
 		

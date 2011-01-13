@@ -168,7 +168,6 @@ class EventResult(object):
 		self.type = None
 		self.exception = None
 		self.traceback  = None
-		self.fail()
 
 	def success(self):
 		"""
