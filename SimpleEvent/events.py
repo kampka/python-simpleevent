@@ -27,13 +27,13 @@ Example::
 	
 	>>> em = EventManager()
 	
-	>>> def receiver(notififcation):
+	>>> def receiver(notification):
 	...	print notification
 	
 	>>> em.registerHandler("notify", receiver)
 	
-	>>> em.emit(Event("notify", "Hello event notification"))
-	"Hello event notification"
+	>>> result = em.emit(Event("notify", "Hello event notification"))
+	Hello event notification
 """
 
 import sys

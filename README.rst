@@ -12,13 +12,12 @@ with the `EventManager`. Whenever an `Event` is emitted though that
 methods for all callbacks registered for that event.
 
 Example::
-	>>> from SimpleEvent import *
 	>>> em = EventManager()
 	
-	>>> def receiver(notififcation):
+	>>> def receiver(notification):
 	...	print notification
 	
 	>>> em.registerHandler("notify", receiver)
 	
-	>>> em.emit(Event("notify", "Hello event notification"))
-	"Hello event notification"
+	>>> result = em.emit(Event("notify", "Hello event notification"))
+	Hello event notification
