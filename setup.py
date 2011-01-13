@@ -20,7 +20,7 @@ from setuptools import setup, find_packages
 
 setup(
 	name='python-simpleevent',
-	version='1.0',
+	version='1.1',
 	license='GPL-2',
 	url='https://github.com/kampka/python-simpleevent',
 	description='A simple python event notification system',
