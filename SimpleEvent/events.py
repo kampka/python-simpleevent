@@ -24,14 +24,14 @@ with the :class:`EventManager`. Whenever an :class:`Event` is emitted though tha
 methods for all callbacks registered for that event.
 
 Example::
-	
+
 	>>> em = EventManager()
-	
+
 	>>> def receiver(notification):
 	...	print notification
-	
+
 	>>> em.registerHandler("notify", receiver)
-	
+
 	>>> result = em.emit(Event("notify", "Hello event notification"))
 	Hello event notification
 """
@@ -44,7 +44,7 @@ class EventManager(object):
 	and dispatching of event.
 	Usually, only a single instance of this class exists throughout a program.
 	"""
-	
+
 	def __init__(self, maxPriority=100):
 		"""
 		Create a new EventManager
@@ -52,19 +52,19 @@ class EventManager(object):
 		:param maxPriority: The maximum priotiry range an event can be registered in.
 		:type maxPriority: int.
 		"""
-		
+
 		assert maxPriority > 0
 
 		self._maxPriority = maxPriority
 		self._handlers = {}
-		
+
 	def registerHandler(self, event, handler, priority=50):
 		"""
 		Register a function as a callback for an event to be called when an event is emitted.
-		
+
 		:param event: The event identifier to register the handler with.
 		:type event: str.
-		
+
 		:param handler: The handler to call when the event occurs.
 			This must be a callable function.
 		:type handler: function.
@@ -77,32 +77,25 @@ class EventManager(object):
 		"""
 		assert priority >= 0
 		assert priority <= self._maxPriority
-		
-		if not self._handlers.has_key(event):
-			self._handlers[event] = {}
-		
-		if not self._handlers[event].has_key(priority):
-			self._handlers[event][priority] = []
 
-		if not handler in self._handlers[event][priority]:
-			self._handlers[event][priority].append(handler)
+		self._handlers.setdefault(event, {}).setdefault(priority, set()).add(handler)
+
 
 
 	def deregisterHandler(self, event, handler):
 		"""
 		Deregister a function from an event that is allready registered as a handler.
-		
+
 		:param event: The event to deregiester the handler from.
 		:type event: str.
-		
+
 		:param handler: The handler function to deregister from the event.
 		:type handler: function.
-		
+
 		"""
-		if self._handlers.has_key(event):
-			for priority in self._handlers[event].keys():
-				if handler in self._handlers[event][priority]:
-					self._handlers[event][priority].remove(handler)
+		for prioritySet in self._handlers.get(event, {}).values():
+			if handler in prioritySet:
+				prioritySet.remove(handler)
 
 	def emit(self, event):
 		"""
@@ -110,12 +103,12 @@ class EventManager(object):
 
 		:param event: The event to emit to the handlers regiestered for it.
 		:type event: :class:`Event`
-		
+
 		:returns: :class:`EventResult` - If an :class:`Exception` occurred while calling a handler, the :class:`EventResult` will encapsulate
 		  that exception. Notification emitter which rely onto weather the event was successfully dispatched should check this object for success/failure.
 		"""
 		result = EventResult()
-		if self._handlers.has_key(event.name):
+		if event.name in self._handlers:
 			for key, handlers in sorted(self._handlers[event.name].items()):
 				for handler in handlers:
 					try:
@@ -124,7 +117,7 @@ class EventManager(object):
 						result.fail()
 						if getattr(event, "haltOnError", False):
 							return result
-						
+
 		return result
 
 	def emitUntil(self, event):
@@ -132,15 +125,15 @@ class EventManager(object):
 		Emits an event to all handlers registered with the event name until True is returned by one of the handlers.
 		Once a handler returns True, the rest of the handlers will be ignored and :meth:`emitUntil` will return the result
 		that it got so far.
-		
+
 		:param event: The event to emit to the handlers regiestered for it.
 		:type event: :class:`Event`
-		
+
 		:returns: :class:`EventResult` - If an :class:`Exception` occurred while calling a handler, the :class:`EventResult` will encapsulate
 		  that exception. Notification emitter which rely onto weather the event was successfully dispatched should check this object for success/failure.
 		"""
 		result = EventResult()
-		if self._handlers.has_key(event.name):
+		if event.name in self._handlers:
 			for key, handlers in sorted(self._handlers[event.name].items()):
 				for handler in handlers:
 					try:
@@ -174,10 +167,10 @@ class EventResult(object):
 		Returns True if this represents a successful notification, or False otherwise.
 		"""
 		return self.result
-	
+
 	def failure(self):
 		"""
-		Returns True if this represents a unsuccessful notification, or False otherwise. 
+		Returns True if this represents a unsuccessful notification, or False otherwise.
 		"""
 		return not self.result
 
@@ -186,7 +179,7 @@ class EventResult(object):
 		Mark this :class:`EventResult` as failed, despite of any actually occurring errors.
 		"""
 		self.maybeFail()
-		
+
 		if not self.exception:
 			self.exception = NonErrorEventException("Marked as failed without an actual exception present.")
 			self.message = str(self.exception)
@@ -199,15 +192,14 @@ class EventResult(object):
 		If no Exception occurred, calling this function will have no effect.
 		"""
 		self.type, self.exception, self.traceback = sys.exc_info()
-		
+
 		if self.traceback is not None:
-			sys.exc_clear()
 			self.result = False
 			self.message = str(self.exception)
 
 	def __eq__(self, other):
 		return self.success() == bool(other)
-	
+
 	def __nonzero__(self):
 		return self.success()
 
@@ -234,7 +226,7 @@ class HaltingEvent(Event):
 		  If not, it will continue, to call all handlers remaining handlers and return only the latest failure if one occurred.
 		  Normaly, registered handler should not raise Exceptions up to the EventManager.
 		:type haltOnError: bool.
-		"""	
+		"""
 		Event.__init__(self, name, *args, **kwargs)
 		self.haltOnError = True
 

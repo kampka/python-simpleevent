@@ -21,7 +21,7 @@ import unittest
 from SimpleEvent import *
 
 class SimpleEventTestCase(unittest.TestCase):
-	
+
 	class _EventMock(object):
 		def __init__(self):
 			self.value = None
@@ -40,12 +40,12 @@ class SimpleEventTestCase(unittest.TestCase):
 		self.em.registerHandler("notify", handler)
 
 		result = self.em.emit(Event(notification))
-		
+
 		self.assertTrue(result.success(), "Event chain reported an error during execution that cannot have occurred.")
 		self.assertFalse(result.failure(), "Event chain reported a failure that did not happen.")
 
 	def test_emitUntil(self):
-		
+
 		def callableHandler(m):
 			m.value = True
 			m.message = ""
@@ -57,7 +57,7 @@ class SimpleEventTestCase(unittest.TestCase):
 
 		self.em.registerHandler("notify", callableHandler, 10)
 		self.em.registerHandler("notify", uncallableHandler, 20)
-		
+
 		m = self._EventMock()
 		self.em.emitUntil(Event("notify", m))
 
@@ -73,7 +73,7 @@ class SimpleEventTestCase(unittest.TestCase):
 			raise e
 
 		def handle(m):
-			
+
 			m.value = False
 			m.message = "Event should not have reached this handler"
 			self.fail(m.message)
@@ -94,7 +94,7 @@ class SimpleEventTestCase(unittest.TestCase):
 		self.assertRaises(AssertionError, self.em.registerHandler, "notify", lambda x: None, 60)
 		try:
 			self.em.registerHandler("notify", lambda x: None, 50)
-		except AssertionError, e:
+		except AssertionError as e:
 			self.fail("Handler is in acceptable parameters but it is being rejected.")
 
 
