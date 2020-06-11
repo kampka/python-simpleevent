@@ -5,6 +5,8 @@ SimpleEvent
 A simple python event notification system
 -----------------------------------------
 
+**The Debian support for this project is unmaintained**
+
 .. image:: https://travis-ci.org/kampka/python-simpleevent.svg?branch=master
     :target: https://travis-ci.org/kampka/python-simpleevent
 
